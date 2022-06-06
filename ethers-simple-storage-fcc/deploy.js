@@ -1,11 +1,29 @@
-import { ethers } from "ethers";
-import fs from "fs-extra";
+const ethers = require("ethers");
+const fs = require("fs-extra");
 
 async function main() {
-    const provider =  new ethers.providers.JsonRpcBatchProvider("http://127.0.0.1:7545");
-    const wallet  = new ethers.wallet("c3b6a94b7358bc4d9e20b8ac41ed1c4a7e382c52301355e75ec3a606c42fd355", provider);
-    const abi = fs.readFileSync("./simpleStorage_sol_simpleStorage.abi", "utf8");
-    const binary = fs.readFileSync("./simpleStorage_sol_simpleStorage.bin", "utf8");
-    const contractFactory = ethers.ContractFactory(abi, binary, wallet);
-
+  const provider = new ethers.providers.JsonRpcBatchProvider(
+    "http://127.0.0.1:7545"
+  );
+  const wallet = new ethers.Wallet(
+    "37b4b467fc7127880503ec03ff69ade5bdbc170823d43ce9cb2d2e5fc84ad7af",
+    provider
+  );
+  console.log(wallet);
+  const abi = fs.readFileSync("./simpleStorage_sol_SimpleStorage.abi", "utf8");
+  const binary = fs.readFileSync(
+    "./simpleStorage_sol_SimpleStorage.bin",
+    "utf8"
+  );
+  const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
+  console.log("Deploying Please wait");
+  const contract = await contractFactory.deploy();
+  console.log(contract);
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
